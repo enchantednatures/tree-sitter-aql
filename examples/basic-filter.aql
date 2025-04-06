@@ -1,0 +1,3 @@
+for doc in collection
+    filter doc.name == "test"
+    return doc

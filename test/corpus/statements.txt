@@ -10,8 +10,41 @@ for doc in collection
 (source_file
   (statement
     (iter_collection_expression
+        (keyword_for)
         (identifier)
+        (keyword_in)
         (collection_selector 
             (collection_name)))
             (return_statement
+                (keyword_return)
                 (identifier))))
+
+==================
+Filter statements
+==================
+
+for doc in collection
+    filter doc.name == "test"
+    return doc
+
+---
+
+(source_file
+  (statement
+    (iter_collection_expression
+        (keyword_for)
+        (identifier)
+        (keyword_in)
+        (collection_selector 
+            (collection_name)))
+    (filter_expression
+      (keyword_filter)
+      (item
+        (identifier)
+        (identifier))
+        (comparison_operator)
+        (item))
+    (return_statement
+        (keyword_return)
+        (identifier))))
+
