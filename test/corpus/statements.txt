@@ -1,0 +1,17 @@
+==================
+Return statements
+==================
+
+for doc in collection
+    return doc
+
+---
+
+(source_file
+  (statement
+    (iter_collection_expression
+        (identifier)
+        (collection_selector 
+            (collection_name)))
+            (return_statement
+                (identifier))))

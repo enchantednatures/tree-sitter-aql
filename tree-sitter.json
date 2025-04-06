@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "aql",
+      "camelcase": "Aql",
+      "title": "Aql",
+      "scope": "source.aql",
+      "file-types": [
+        "aql"
+      ],
+      "injection-regex": "^aql$",
+      "class-name": "TreeSitterAql"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "ArangoDB Query Language",
+    "authors": [
+      {
+        "name": "Hunter Casten",
+        "email": "huntercasten@icloud.com",
+        "url": "https://enchantednatures.com/"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/enchantednatures/tree-sitter-aql"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
