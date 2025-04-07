@@ -38,7 +38,7 @@
       "required": true,
       "types": [
         {
-          "type": "collection_bind_var",
+          "type": "collection_bind_parameter",
           "named": true
         },
         {
@@ -57,10 +57,6 @@
       "required": true,
       "types": [
         {
-          "type": "bind_var",
-          "named": true
-        },
-        {
           "type": "comparison_operator",
           "named": true
         },
@@ -77,6 +73,32 @@
     "fields": {}
   },
   {
+    "type": "depth_range",
+    "named": true,
+    "fields": {
+      "max_depth": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "min_depth": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "expression",
     "named": true,
     "fields": {},
@@ -85,11 +107,11 @@
       "required": true,
       "types": [
         {
-          "type": "member_expression",
+          "type": "function_call",
           "named": true
         },
         {
-          "type": "object",
+          "type": "member_expression",
           "named": true
         }
       ]
@@ -155,6 +177,125 @@
     }
   },
   {
+    "type": "for_traversal_operation",
+    "named": true,
+    "fields": {
+      "depth_range": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "depth_range",
+            "named": true
+          }
+        ]
+      },
+      "direction": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "traversal_direction",
+            "named": true
+          }
+        ]
+      },
+      "graph_name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "start_vertex": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "variables": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "kw_for",
+          "named": true
+        },
+        {
+          "type": "kw_graph",
+          "named": true
+        },
+        {
+          "type": "kw_in",
+          "named": true
+        },
+        {
+          "type": "traversal_options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "function_call",
+    "named": true,
+    "fields": {
+      "arguments": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "function_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "kw_any",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_traversal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "kw_filter",
     "named": true,
     "fields": {},
@@ -185,6 +326,21 @@
     }
   },
   {
+    "type": "kw_graph",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_traversal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "kw_in",
     "named": true,
     "fields": {},
@@ -200,7 +356,67 @@
     }
   },
   {
+    "type": "kw_inbound",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_traversal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "kw_let",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_operation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "kw_options",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_traversal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "kw_outbound",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_traversal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "kw_prune",
     "named": true,
     "fields": {},
     "children": {
@@ -326,7 +542,11 @@
       "required": false,
       "types": [
         {
-          "type": "collection_bind_var",
+          "type": "bind_parameter",
+          "named": true
+        },
+        {
+          "type": "collection_bind_parameter",
           "named": true
         },
         {
@@ -409,6 +629,25 @@
     }
   },
   {
+    "type": "prune_operation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "kw_prune",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "query",
     "named": true,
     "fields": {},
@@ -422,6 +661,14 @@
         },
         {
           "type": "for_operation",
+          "named": true
+        },
+        {
+          "type": "for_traversal_operation",
+          "named": true
+        },
+        {
+          "type": "prune_operation",
           "named": true
         },
         {
@@ -501,6 +748,48 @@
     }
   },
   {
+    "type": "traversal_direction",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "kw_any",
+          "named": true
+        },
+        {
+          "type": "kw_inbound",
+          "named": true
+        },
+        {
+          "type": "kw_outbound",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "traversal_options",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "kw_options",
+          "named": true
+        },
+        {
+          "type": "object",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "!=",
     "named": false
   },
@@ -513,11 +802,27 @@
     "named": false
   },
   {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "*",
+    "named": false
+  },
+  {
     "type": ",",
     "named": false
   },
   {
     "type": ".",
+    "named": false
+  },
+  {
+    "type": "..",
     "named": false
   },
   {
@@ -557,7 +862,7 @@
     "named": false
   },
   {
-    "type": "bind_var",
+    "type": "bind_parameter",
     "named": true
   },
   {
@@ -565,7 +870,7 @@
     "named": true
   },
   {
-    "type": "collection_bind_var",
+    "type": "collection_bind_parameter",
     "named": true
   },
   {
@@ -587,6 +892,10 @@
   },
   {
     "type": "keyword_operator",
+    "named": true
+  },
+  {
+    "type": "keyword_traversal",
     "named": true
   },
   {

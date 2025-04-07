@@ -1,0 +1,212 @@
+==================
+TODO: fix - Basic Traversal statements
+==================
+
+for v in 0..2 outbound 'knows' graph 'social'
+    return v
+
+---
+
+(source_file
+    (query
+    (for_traversal_operation
+        (kw_for
+        (keyword_operation))
+        (identifier)
+        (kw_in
+        (keyword_operator))
+        (depth_range
+        (number)
+        (number))
+        (traversal_direction
+        (kw_outbound
+            (keyword_traversal)))
+        (expression
+        (member_expression
+            (literal
+            (string
+                (string_fragment)))))
+        (kw_graph
+        (keyword_traversal))
+        (string
+        (string_fragment)))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (identifier))))))
+
+==================
+TODO: fix - Vertex and Edges Traversal statements
+==================
+
+for v, e in 0..10 outbound 'knows' graph 'social'
+    return distinct v
+
+---
+
+(source_file
+    (query
+    (for_traversal_operation
+        (kw_for
+        (keyword_operation))
+        (identifier)
+        (identifier)
+        (kw_in
+        (keyword_operator))
+        (depth_range
+        (number)
+        (number))
+        (traversal_direction
+        (kw_outbound
+            (keyword_traversal)))
+        (expression
+        (member_expression
+            (literal
+            (string
+                (string_fragment)))))
+        (kw_graph
+        (keyword_traversal))
+        (string
+        (string_fragment)))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (identifier)))))
+    (ERROR
+    (identifier)))
+
+==================
+TODO: fix - Prune Traversal statements
+==================
+
+for v, e, p in 0..10 outbound 'knows' graph 'social'
+    prune p.edges[*].weight < 0.8
+    return interleave(p)
+
+---
+
+(ERROR
+    (for_traversal_operation
+    (kw_for
+        (keyword_operation))
+    (identifier)
+    (identifier)
+    (identifier)
+    (kw_in
+        (keyword_operator))
+    (depth_range
+        (number)
+        (number))
+    (traversal_direction
+        (kw_outbound
+        (keyword_traversal)))
+    (expression
+        (member_expression
+        (literal
+            (string
+            (string_fragment)))))
+    (kw_graph
+        (keyword_traversal))
+    (string
+        (string_fragment)))
+    (prune_operation
+    (kw_prune
+        (keyword_operation))
+    (expression
+        (member_expression
+        (member_expression
+            (member_expression
+            (member_expression
+                (identifier))
+            (identifier)))
+        (identifier))))
+    (number)
+    (identifier)
+    (identifier)
+    (identifier))
+
+==================
+TODO: fix - Advanced Traversal statements
+==================
+
+for v, e, p in 0..2 outbound 'knows' graph 'social'
+    let edges = p.edges[*]
+    let project = {
+        name: v.name
+    }
+    return {
+        vertices: path.vertices[*]._key
+    }
+
+---
+
+(source_file
+    (ERROR
+    (for_traversal_operation
+        (kw_for
+        (keyword_operation))
+        (identifier)
+        (identifier)
+        (identifier)
+        (kw_in
+        (keyword_operator))
+        (depth_range
+        (number)
+        (number))
+        (traversal_direction
+        (kw_outbound
+            (keyword_traversal)))
+        (expression
+        (member_expression
+            (literal
+            (string
+                (string_fragment)))))
+        (kw_graph
+        (keyword_traversal))
+        (string
+        (string_fragment))))
+    (let_statement
+    (kw_let
+        (keyword_operation))
+    (identifier)
+    (expression
+        (member_expression
+        (member_expression
+            (member_expression
+            (identifier))
+            (identifier)))))
+    (let_statement
+    (kw_let
+        (keyword_operation))
+    (identifier)
+    (expression
+        (member_expression
+        (object
+            (object_pair
+            (property_identifier)
+            (expression
+                (member_expression
+                (member_expression
+                    (identifier))
+                (identifier))))))))
+    (return_operation
+    (kw_return
+        (keyword_operation))
+    (expression
+        (member_expression
+        (object
+            (object_pair
+            (property_identifier)
+            (expression
+                (member_expression
+                (member_expression
+                    (member_expression
+                    (member_expression
+                        (identifier))
+                    (identifier)))
+                (identifier)))))))))
+

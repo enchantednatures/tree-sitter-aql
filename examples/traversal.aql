@@ -1,0 +1,3 @@
+for v, e, p in 0..10 outbound 'knows' graph 'social'
+    prune p.edges[*].weight < 0.8
+    return interleave(p)

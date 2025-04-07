@@ -14,20 +14,21 @@ return {
     (kw_return
         (keyword_operation))
     (expression
+        (member_expression
         (object
-        (object_pair
+            (object_pair
             (property_identifier)
             (expression
-            (member_expression
+                (member_expression
                 (literal
-                (number)))))
-        (object_pair
+                    (number)))))
+            (object_pair
             (property_identifier)
             (expression
-            (member_expression
+                (member_expression
                 (literal
-                (string
-                    (string_fragment))))))))))
+                    (string
+                    (string_fragment)))))))))))
 
 ==================
 Return Let Object
@@ -41,26 +42,26 @@ return {
 
 ---
 
- (source_file
-      (let_statement
-        (kw_let
-          (keyword_operation))
-        (identifier)
-        (expression
-          (member_expression
-            (literal
-              (string
-                (string_fragment))))))
-      (return_operation
-        (kw_return
-          (keyword_operation))
-        (expression
-          (object
+(source_file
+    (let_statement
+    (kw_let
+        (keyword_operation))
+    (identifier)
+    (expression
+        (member_expression
+        (literal
+            (string
+            (string_fragment))))))
+    (return_operation
+    (kw_return
+        (keyword_operation))
+    (expression
+        (member_expression
+        (object
             (object_pair
-              (property_identifier)
-              (expression
+            (property_identifier)
+            (expression
                 (member_expression
-                  (literal
+                (literal
                     (number)))))
-            (shorthand_property_identifier)))))
-
+            (shorthand_property_identifier))))))

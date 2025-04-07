@@ -1,47 +1,62 @@
 ; Standard captures: https://github.com/nvim-treesitter/nvim-treesitter/blob/master/CONTRIBUTING.md#highlights
-
 ; Keywords
-(keyword_operation) @keyword       ; FOR, FILTER, RETURN
+(keyword_operation) @keyword       ; FOR, FILTER, RETURN, PRUNE
 (keyword_operator) @keyword.operator ; IN (and future operators like AND, OR)
+(traversal_direction) @keyword.special ; OUTBOUND, INBOUND, ANY, GRAPH, OPTIONS
 
 ; Literals
 (string) @string
 (escape_sequence) @string.escape
 (number) @number
-(boolean_literal) @boolean  ; Targets the alias node created for true/false
-(null_literal) @constant.builtin ; Targets the alias node created for null
+(boolean_literal) @boolean
+(null_literal) @constant.builtin
 
 ; Identifiers and Variables
-(identifier) @variable ; Default for identifiers
+(identifier) @variable
+; Function calls
+; (function_call
+;   function_name: (identifier) @function)
 
-; Collection names (more specific type)
+; Collection names
 (collection_selector
   (collection_name
-    (identifier) @type)) ; Highlight collection names as types
+    (identifier) @type))
 
-; Collection bind variables
-(collection_bind_var) @constant ; Or @variable.parameter
+; Bind variables (both types)
+(bind_parameter) @variable.parameter
+(collection_bind_parameter) @variable.parameter
+
+; Graph traversal syntax
+(depth_range) @number
+(for_traversal_operation
+  variables: (identifier) @variable.parameter)
 
 ; Object properties
 (object_pair
   key: (property_identifier) @property)
 (object_pair
-  key: (string) @property) ; String keys
+  key: (string) @property)
 (shorthand_property_identifier) @property
 
 ; Member access
 (member_expression
   property: (identifier) @property)
 
+; Wildcards
+"*" @operator
+
 ; Operators
 (comparison_operator) @operator
 
 ; Punctuation
 "." @punctuation.delimiter
+".." @punctuation.special
 "[" @punctuation.bracket
 "]" @punctuation.bracket
 "{" @punctuation.bracket
 "}" @punctuation.bracket
+"(" @punctuation.bracket
+")" @punctuation.bracket
 ":" @punctuation.delimiter
 "," @punctuation.delimiter
 

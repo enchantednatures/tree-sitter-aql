@@ -9,12 +9,14 @@
 module.exports = grammar({
   name: 'aql',
 
+  conflicts: $ => [
+    [$._expression_atom, $.expression],
+    [$.traversal_options, $.expression]
+  ],
+
   extras: $ => [
     $.comment,
     /\s+/
-  ],
-  conflicts: $ => [
-    [$._expression_atom, $.expression]
   ],
 
   rules: {
@@ -23,17 +25,20 @@ module.exports = grammar({
         $.query,
         $.let_statement,
         $.return_operation,
-        // Add other standalone statements here
       )
     ),
 
     query: ($) =>
       seq(
-        $.for_operation,
-        optional($.filter_operation), // FILTER is optional
+        choice(
+          $.for_operation,
+          seq($.for_traversal_operation, optional($.prune_operation))
+        ),
+        optional(repeat(choice(
+          $.filter_operation,
+        ))),
         $.return_operation,
       ),
-
 
     // --- Operations ---
     for_operation: ($) => seq(
@@ -43,9 +48,47 @@ module.exports = grammar({
       field('collection', $.collection_selector)
     ),
 
+    for_traversal_operation: ($) => seq(
+      $.kw_for,
+      commaSep1(field('variables', $.identifier)),
+      $.kw_in,
+      field('depth_range', $.depth_range),
+      field('direction', $.traversal_direction),
+      field('start_vertex', $.expression),
+      optional(seq(
+        $.kw_graph,
+        field('graph_name', $.string)
+      )),
+      optional($.traversal_options)
+    ),
+
+    // Depth range for traversals (e.g., 1..5)
+    depth_range: $ => seq(
+      field('min_depth', optional($.number)),
+      '..',
+      field('max_depth', optional($.number))
+    ),
+
+    // Traversal direction
+    traversal_direction: $ => choice(
+      $.kw_outbound,
+      $.kw_inbound,
+      $.kw_any
+    ),
+
+    traversal_options: $ => seq(
+      $.kw_options,
+      $.object
+    ),
+
     filter_operation: $ => seq(
       $.kw_filter,
       $.comparison_expression
+    ),
+
+    prune_operation: $ => seq(
+      $.kw_prune,
+      $.expression
     ),
 
     return_operation: $ => seq(
@@ -62,10 +105,16 @@ module.exports = grammar({
     ),
 
     // --- Expressions ---
-    expression: $ => choice(
+    expression: $ => prec(1, choice(
       $.member_expression,
-      $.object,
-      // Add other expression types
+      $.function_call
+    )),
+
+    function_call: $ => seq(
+      field('function_name', $.identifier),
+      '(',
+      optional(commaSep1(field('arguments', $.expression))),
+      ')'
     ),
 
     // Handles base identifiers, literals, and parenthesized expressions
@@ -73,8 +122,9 @@ module.exports = grammar({
       $.identifier,
       $.literal,
       $.object,
-      $.collection_bind_var
-      // Add $.array, $.function_call, seq('(', $.expression, ')') etc. here later
+      $.bind_parameter,
+      $.collection_bind_parameter
+      // Add $.array, seq('(', $.expression, ')') etc. here later
     ),
 
     // Handles property access like a.b, a['b'], a[0]
@@ -90,13 +140,20 @@ module.exports = grammar({
         '[',
         field('property', $.expression),
         ']'
+      ),
+      // Array wildcard access p.edges[*]
+      seq(
+        field('object', $.member_expression),
+        '[',
+        '*',
+        ']'
       )
     ),
 
     comparison_expression: $ => seq(
-      choice($.expression, $.bind_var),
+      $.expression,
       $.comparison_operator,
-      choice($.expression, $.bind_var)
+      $.expression
     ),
 
     comparison_operator: $ => choice(
@@ -111,11 +168,17 @@ module.exports = grammar({
     // --- Collections ---
     collection_selector: $ => choice(
       $.collection_name,
-      $.collection_bind_var
+      $.collection_bind_parameter
     ),
 
     collection_name: $ => $.identifier,
-    collection_bind_var: $ => /@@[a-zA-Z_][a-zA-Z0-9_]*/,
+
+    // --- Bind Parameters ---
+    // Collection bind parameter (@@name)
+    collection_bind_parameter: $ => token(/@@[a-zA-Z_][a-zA-Z0-9_]*/),
+
+    // Regular bind parameter (@name)
+    bind_parameter: $ => token(/@[a-zA-Z_][a-zA-Z0-9_]*/),
 
     // --- Literals and Values ---
     literal: $ => choice(
@@ -127,7 +190,7 @@ module.exports = grammar({
 
     value: $ => $.literal,
 
-    object: $ => seq(
+    object: $ => prec(2, seq(
       '{',
       commaSep(
         choice(
@@ -137,7 +200,7 @@ module.exports = grammar({
         )
       ),
       '}'
-    ),
+    )),
 
     object_pair: $ => seq(
       field('key', choice(
@@ -185,7 +248,6 @@ module.exports = grammar({
 
     // --- Identifiers ---
     identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
-    bind_var: $ => /@[a-zA-Z_][a-zA-Z0-9_]*/,
 
     // --- Keywords (Case-Insensitive) ---
     kw_filter: $ => alias(token(make_keyword("filter")), $.keyword_operation),
@@ -199,6 +261,14 @@ module.exports = grammar({
     kw_update: $ => alias(token(make_keyword("update")), $.keyword_operation),
     kw_upsert: $ => alias(token(make_keyword("upsert")), $.keyword_operation),
     kw_replace: $ => alias(token(make_keyword("replace")), $.keyword_operation),
+
+    // Traversal keywords
+    kw_outbound: $ => alias(token(make_keyword("outbound")), $.keyword_traversal),
+    kw_inbound: $ => alias(token(make_keyword("inbound")), $.keyword_traversal),
+    kw_any: $ => alias(token(make_keyword("any")), $.keyword_traversal),
+    kw_graph: $ => alias(token(make_keyword("graph")), $.keyword_traversal),
+    kw_prune: $ => alias(token(make_keyword("prune")), $.keyword_operation),
+    kw_options: $ => alias(token(make_keyword("options")), $.keyword_traversal),
 
     boolean: $ => alias(choice($._kw_true, $._kw_false), $.boolean_literal),
     null: $ => alias($._kw_null, $.null_literal),
@@ -240,4 +310,4 @@ function commaSep1(rule) {
  */
 function commaSep(rule) {
   return optional(commaSep1(rule));
-}
+}// @ts-check

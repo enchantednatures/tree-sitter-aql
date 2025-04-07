@@ -1,0 +1,3 @@
+for doc in @@collection
+    filter doc.item == @var
+    return doc
