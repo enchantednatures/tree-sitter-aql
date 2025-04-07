@@ -1,0 +1,3 @@
+for doc in collection
+    for link in doc.links
+    return link.target

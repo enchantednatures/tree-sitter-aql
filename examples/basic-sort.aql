@@ -1,0 +1,3 @@
+for doc in collection
+    sort doc.created_at
+    return doc

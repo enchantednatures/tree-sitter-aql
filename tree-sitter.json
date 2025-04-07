@@ -10,7 +10,10 @@
         "aql"
       ],
       "injection-regex": "^aql$",
-      "class-name": "TreeSitterAql"
+      "class-name": "TreeSitterAql",
+      "highlights": [
+        "queries/highlights.scm"
+      ]
     }
   ],
   "metadata": {

@@ -1,25 +1,4 @@
 ==================
-Return statements
-==================
-
-for doc in collection
-    return doc
-
----
-
-(source_file
-  (statement
-    (iter_collection_expression
-        (keyword_for)
-        (identifier)
-        (keyword_in)
-        (collection_selector 
-            (collection_name)))
-            (return_statement
-                (keyword_return)
-                (identifier))))
-
-==================
 Filter statements
 ==================
 
@@ -30,21 +9,38 @@ for doc in collection
 ---
 
 (source_file
-  (statement
-    (iter_collection_expression
-        (keyword_for)
+    (query
+    (for_operation
+        (kw_for
+        (keyword_operation))
         (identifier)
-        (keyword_in)
-        (collection_selector 
-            (collection_name)))
-    (filter_expression
-      (keyword_filter)
-      (item
-        (identifier)
-        (identifier))
-        (comparison_operator)
-        (item))
-    (return_statement
-        (keyword_return)
-        (identifier))))
+          (kw_in
+            (keyword_operator))
+          (collection_selector
+            (collection_name
+              (identifier))))
+        (filter_operation
+          (kw_filter
+            (keyword_operation))
+          (comparison_expression
+            (expression
+              (member_expression
+                (member_expression
+                  (identifier))
+                (identifier)))
+            (comparison_operator)
+            (expression
+              (member_expression
+                (literal
+                  (string
+                    (string_fragment)))))))
+        (return_operation
+          (kw_return
+            (keyword_operation))
+          (expression
+            (member_expression
+              (identifier))))))
+
+
+
 

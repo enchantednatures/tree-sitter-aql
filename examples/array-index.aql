@@ -1,0 +1,2 @@
+for item in collection
+    return item[0].value

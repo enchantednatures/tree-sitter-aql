@@ -1,0 +1,45 @@
+==================
+Return Object
+==================
+
+return {
+    _key: 123,
+    name: "test"
+}
+
+---
+
+(source_file
+    (return_operation
+    (kw_return
+        (keyword_operation))
+    (expression
+        (member_expression
+        (object
+            (object_pair
+            (property_identifier)
+            (expression
+                (member_expression
+                (literal
+                    (number)))))
+            (object_pair
+            (property_identifier)
+            (expression
+                (member_expression
+                (literal
+                    (string
+                    (string_fragment)))))))))))
+
+==================
+Return Let Object
+==================
+
+let name = "test"
+return {
+    _key: 123,
+    name
+}
+
+---
+
+(source_file)
