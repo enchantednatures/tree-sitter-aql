@@ -57,6 +57,10 @@
       "required": true,
       "types": [
         {
+          "type": "bind_var",
+          "named": true
+        },
+        {
           "type": "comparison_operator",
           "named": true
         },
@@ -82,6 +86,10 @@
       "types": [
         {
           "type": "member_expression",
+          "named": true
+        },
+        {
+          "type": "object",
           "named": true
         }
       ]
@@ -192,6 +200,21 @@
     }
   },
   {
+    "type": "kw_let",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_operation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "kw_return",
     "named": true,
     "fields": {},
@@ -201,6 +224,42 @@
       "types": [
         {
           "type": "keyword_operation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "let_statement",
+    "named": true,
+    "fields": {
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "variable": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "kw_let",
           "named": true
         }
       ]
@@ -404,9 +463,13 @@
     "root": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "let_statement",
+          "named": true
+        },
         {
           "type": "query",
           "named": true
@@ -470,6 +533,10 @@
     "named": false
   },
   {
+    "type": "=",
+    "named": false
+  },
+  {
     "type": "==",
     "named": false
   },
@@ -488,6 +555,10 @@
   {
     "type": "]",
     "named": false
+  },
+  {
+    "type": "bind_var",
+    "named": true
   },
   {
     "type": "boolean_literal",

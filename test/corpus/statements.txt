@@ -42,5 +42,81 @@ for doc in collection
               (identifier))))))
 
 
+==================
+Filter with Bind Var statements
+==================
 
+for doc in collection
+    filter doc.name == @name 
+    return doc
+
+---
+
+(source_file
+    (query
+    (for_operation
+        (kw_for
+        (keyword_operation))
+        (identifier)
+        (kw_in
+        (keyword_operator))
+        (collection_selector
+        (collection_name
+            (identifier))))
+    (filter_operation
+        (kw_filter
+        (keyword_operation))
+        (comparison_expression
+        (expression
+            (member_expression
+            (member_expression
+                (identifier))
+            (identifier)))
+        (comparison_operator)
+        (bind_var)))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (identifier))))))
+
+==================
+Filter with Bind Var statements
+==================
+
+for doc in collection
+    filter @name != doc.name 
+    return doc
+
+---
+
+(source_file
+    (query
+    (for_operation
+        (kw_for
+        (keyword_operation))
+        (identifier)
+        (kw_in
+        (keyword_operator))
+        (collection_selector
+        (collection_name
+            (identifier))))
+    (filter_operation
+        (kw_filter
+        (keyword_operation))
+        (comparison_expression
+        (bind_var)
+        (comparison_operator)
+        (expression
+            (member_expression
+            (member_expression
+                (identifier))
+            (identifier)))))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (identifier))))))
 

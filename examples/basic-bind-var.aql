@@ -1,0 +1,3 @@
+for doc in collection
+    filter doc.name == @name 
+    return doc

@@ -6,7 +6,6 @@
 
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
-
 module.exports = grammar({
   name: 'aql',
 
@@ -14,11 +13,18 @@ module.exports = grammar({
     $.comment,
     /\s+/
   ],
+  conflicts: $ => [
+    [$._expression_atom, $.expression]
+  ],
 
   rules: {
-    source_file: ($) => choice(
-      $.query,
-      $.return_operation,
+    source_file: ($) => repeat1(
+      choice(
+        $.query,
+        $.let_statement,
+        $.return_operation,
+        // Add other standalone statements here
+      )
     ),
 
     query: ($) =>
@@ -28,39 +34,46 @@ module.exports = grammar({
         $.return_operation,
       ),
 
+
     // --- Operations ---
     for_operation: ($) => seq(
-      $.kw_for, // Use the named rule again
+      $.kw_for,
       field('variable', $.identifier),
-      $.kw_in,  // Use the named rule again
+      $.kw_in,
       field('collection', $.collection_selector)
     ),
 
     filter_operation: $ => seq(
-      $.kw_filter, // Use the named rule again
+      $.kw_filter,
       $.comparison_expression
     ),
 
     return_operation: $ => seq(
-      $.kw_return, // Use the named rule again
+      $.kw_return,
       field('value', $.expression)
     ),
+
+    // Add let statement
+    let_statement: $ => seq(
+      $.kw_let,
+      field('variable', $.identifier),
+      '=',
+      field('value', $.expression)
+    ),
+
     // --- Expressions ---
     expression: $ => choice(
       $.member_expression,
-      // $.literal,
-      // $.object,
-      // $.collection_bind_var
-      // TODO: Add function calls, operators (arithmetic, logical), arrays, etc.
+      $.object,
+      // Add other expression types
     ),
-
 
     // Handles base identifiers, literals, and parenthesized expressions
     _expression_atom: $ => choice(
       $.identifier,
-      $.literal,             // Keep literal here
-      $.object,              // Keep object here
-      $.collection_bind_var  // Keep bind var here
+      $.literal,
+      $.object,
+      $.collection_bind_var
       // Add $.array, $.function_call, seq('(', $.expression, ')') etc. here later
     ),
 
@@ -75,15 +88,15 @@ module.exports = grammar({
       seq(
         field('object', $.member_expression),
         '[',
-        field('property', $.expression), // Property can be string, number (index), or other expression
+        field('property', $.expression),
         ']'
       )
     ),
 
     comparison_expression: $ => seq(
-      $.expression,
+      choice($.expression, $.bind_var),
       $.comparison_operator,
-      $.expression
+      choice($.expression, $.bind_var)
     ),
 
     comparison_operator: $ => choice(
@@ -92,9 +105,7 @@ module.exports = grammar({
       '<',
       '<=',
       '>',
-      '>=',
-      // TODO: case-insensitive 'IN', 'NOT IN', 'LIKE', 'REGEX TEST' etc.
-      // alias(make_keyword('like'), $.op_like),
+      '>='
     ),
 
     // --- Collections ---
@@ -103,8 +114,8 @@ module.exports = grammar({
       $.collection_bind_var
     ),
 
-    collection_name: $ => $.identifier, // Collection names are identifiers
-    collection_bind_var: $ => /@@[a-zA-Z_][a-zA-Z0-9_]*/, // Collection bind parameter
+    collection_name: $ => $.identifier,
+    collection_bind_var: $ => /@@[a-zA-Z_][a-zA-Z0-9_]*/,
 
     // --- Literals and Values ---
     literal: $ => choice(
@@ -112,29 +123,33 @@ module.exports = grammar({
       $.number,
       $.boolean,
       $.null
-      // TODO: $.array
     ),
 
-    value: $ => $.literal, // Simple alias, might be replaced by expression later
+    value: $ => $.literal,
 
-    object: $ => seq( // Removed prec('object', ...) wrapper
+    object: $ => seq(
       '{',
-      commaSep(optional(choice(
-        $.object_pair,
-        // Shorthand property { identifier } expands to { identifier: identifier }
-        alias($.identifier, $.shorthand_property_identifier)
-      ))),
+      commaSep(
+        choice(
+          $.object_pair,
+          // Shorthand property { identifier } expands to { identifier: identifier }
+          alias($.identifier, $.shorthand_property_identifier)
+        )
+      ),
       '}'
     ),
+
     object_pair: $ => seq(
       field('key', choice(
         alias($.identifier, $.property_identifier),
-        $.string // Object keys can be strings
+        $.string
       )),
       ':',
       field('value', $.expression)
     ),
+
     number: _ => token(/-?\d+(\.\d+)?([eE][+-]?\d+)?/),
+
     string: $ => choice(
       seq(
         '"',
@@ -159,26 +174,26 @@ module.exports = grammar({
     escape_sequence: _ => token.immediate(seq(
       '\\',
       choice(
-        /[^xu0-7]/, // Any character except x, u, or octal digit
-        /[0-7]{1,3}/, // Octal sequence
-        /x[0-9a-fA-F]{2}/, // Hex sequence
-        /u[0-9a-fA-F]{4}/, // Unicode sequence
-        /u\{[0-9a-fA-F]+\}/, // Extended Unicode sequence
-        /[\r?][\n\u2028\u2029]/ // Line continuation
+        /[^xu0-7]/,
+        /[0-7]{1,3}/,
+        /x[0-9a-fA-F]{2}/,
+        /u[0-9a-fA-F]{4}/,
+        /u\{[0-9a-fA-F]+\}/,
+        /[\r?][\n\u2028\u2029]/
       ),
     )),
 
     // --- Identifiers ---
-    identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/, // Standard identifier pattern
+    identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    bind_var: $ => /@[a-zA-Z_][a-zA-Z0-9_]*/,
 
     // --- Keywords (Case-Insensitive) ---
     kw_filter: $ => alias(token(make_keyword("filter")), $.keyword_operation),
     kw_return: $ => alias(token(make_keyword("return")), $.keyword_operation),
-    kw_in: $ => alias(token(make_keyword("in")), $.keyword_operator), // Different alias category maybe
+    kw_in: $ => alias(token(make_keyword("in")), $.keyword_operator),
     kw_for: $ => alias(token(make_keyword("for")), $.keyword_operation),
     kw_let: $ => alias(token(make_keyword("let")), $.keyword_operation),
     kw_collect: $ => alias(token(make_keyword("collect")), $.keyword_operation),
-    // kw_any_in: $ => alias(token(make_keyword("any in")), $.keyword_operation),
     kw_into: $ => alias(token(make_keyword("into")), $.keyword_operation),
     kw_insert: $ => alias(token(make_keyword("insert")), $.keyword_operation),
     kw_update: $ => alias(token(make_keyword("update")), $.keyword_operation),
@@ -194,8 +209,8 @@ module.exports = grammar({
 
     // --- Comments ---
     comment: $ => token(choice(
-      seq('//', /.*/), // Single-line comment
-      seq('/*', /[^*]*\*+([^/*][^*]*\*+)*/, '/') // Multi-line comment
+      seq('//', /.*/),
+      seq('/*', /[^*]*\*+([^/*][^*]*\*+)*/, '/')
     )),
   }
 });
