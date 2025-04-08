@@ -1,5 +1,54 @@
 [
   {
+    "type": "aggregate_operation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "function_call",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "kw_aggregate",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "assignment",
+    "named": true,
+    "fields": {
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "variable": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "boolean",
     "named": true,
     "fields": {},
@@ -9,6 +58,33 @@
       "types": [
         {
           "type": "boolean_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "collect_operation",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "aggregate_operation",
+          "named": true
+        },
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "into",
+          "named": true
+        },
+        {
+          "type": "kw_collect",
           "named": true
         }
       ]
@@ -88,7 +164,7 @@
       },
       "min_depth": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "number",
@@ -281,6 +357,40 @@
     }
   },
   {
+    "type": "into",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "kw_into",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "kw_aggregate",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_operation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "kw_any",
     "named": true,
     "fields": {},
@@ -290,6 +400,21 @@
       "types": [
         {
           "type": "keyword_traversal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "kw_collect",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_operation",
           "named": true
         }
       ]
@@ -371,6 +496,21 @@
     }
   },
   {
+    "type": "kw_into",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_operation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "kw_let",
     "named": true,
     "fields": {},
@@ -446,19 +586,24 @@
     }
   },
   {
+    "type": "kw_sort",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword_operation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "let_statement",
     "named": true,
     "fields": {
-      "value": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
       "variable": {
         "multiple": false,
         "required": true,
@@ -471,11 +616,41 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "kw_let",
+          "named": true
+        },
+        {
+          "type": "let_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "let_value",
+    "named": true,
+    "fields": {
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "subquery",
           "named": true
         }
       ]
@@ -656,10 +831,6 @@
       "required": true,
       "types": [
         {
-          "type": "filter_operation",
-          "named": true
-        },
-        {
           "type": "for_operation",
           "named": true
         },
@@ -674,6 +845,10 @@
         {
           "type": "return_operation",
           "named": true
+        },
+        {
+          "type": "statement",
+          "named": true
         }
       ]
     }
@@ -681,9 +856,47 @@
   {
     "type": "return_operation",
     "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "keyword_distinct",
+          "named": true
+        },
+        {
+          "type": "kw_return",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sort_direction",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "bind_parameter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sort_statement",
+    "named": true,
     "fields": {
-      "value": {
-        "multiple": false,
+      "sort_key": {
+        "multiple": true,
         "required": true,
         "types": [
           {
@@ -694,11 +907,15 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "kw_return",
+          "type": "kw_sort",
+          "named": true
+        },
+        {
+          "type": "sort_direction",
           "named": true
         }
       ]
@@ -729,6 +946,33 @@
     }
   },
   {
+    "type": "statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "collect_operation",
+          "named": true
+        },
+        {
+          "type": "filter_operation",
+          "named": true
+        },
+        {
+          "type": "let_statement",
+          "named": true
+        },
+        {
+          "type": "sort_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "string",
     "named": true,
     "fields": {},
@@ -742,6 +986,37 @@
         },
         {
           "type": "string_fragment",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "subquery",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "for_operation",
+          "named": true
+        },
+        {
+          "type": "for_traversal_operation",
+          "named": true
+        },
+        {
+          "type": "prune_operation",
+          "named": true
+        },
+        {
+          "type": "return_operation",
+          "named": true
+        },
+        {
+          "type": "statement",
           "named": true
         }
       ]
@@ -884,6 +1159,10 @@
   },
   {
     "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "keyword_distinct",
     "named": true
   },
   {

@@ -1,0 +1,8 @@
+for doc in documents
+    collect name = doc.name
+    with count into len
+
+    return {
+        name, 
+        len
+    }

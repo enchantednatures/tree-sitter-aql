@@ -9,10 +9,10 @@
 module.exports = grammar({
   name: 'aql',
 
-  conflicts: $ => [
-    [$._expression_atom, $.expression],
-    [$.traversal_options, $.expression]
-  ],
+  // conflicts: $ => [
+  //   [$._expression_atom, $.expression],
+  //   [$.traversal_options, $.expression]
+  // ],
 
   extras: $ => [
     $.comment,
@@ -20,25 +20,79 @@ module.exports = grammar({
   ],
 
   rules: {
-    source_file: ($) => repeat1(
-      choice(
-        $.query,
-        $.let_statement,
-        $.return_operation,
-      )
+    // the aql editor only supports a single query, therefore, we shouldn't parse multiple queries
+    source_file: ($) => choice(
+      $.query,
+      // support direct returns
+      seq(
+        optional($.let_statement),
+        $.return_operation),
     ),
 
     query: ($) =>
       seq(
         choice(
           $.for_operation,
-          seq($.for_traversal_operation, optional($.prune_operation))
+          seq($.for_traversal_operation, repeat($.prune_operation))
         ),
-        optional(repeat(choice(
-          $.filter_operation,
-        ))),
+        repeat(choice($.statement)),
         $.return_operation,
       ),
+
+    statement: $ => choice($.filter_operation, $.collect_operation, $.let_statement, $.sort_statement),
+
+    return_operation: $ => seq(
+      $.kw_return,
+      seq(optional(alias("distinct", $.keyword_distinct)), $.expression)
+    ),
+
+
+    collect_operation: $ => seq(
+      $.kw_collect,
+      $.assignment,
+      optional($.aggregate_operation),
+      optional($.into)
+    ),
+
+    sort_statement: $ => seq(
+      $.kw_sort,
+      $._sort_expression,
+      repeat(seq(
+        ',',
+        $._sort_expression
+      ))
+    ),
+
+    _sort_expression: $ => seq(
+      field('sort_key', $.expression),
+      alias(optional($.sort_direction), $.sort_direction)
+    ),
+
+    sort_direction: $ => choice(
+      $._kw_asc,
+      $._kw_desc,
+      $._kw_null,
+      $.bind_parameter
+    ),
+
+    into: $ => seq(
+      $.kw_into,
+      $.assignment
+    ),
+    aggregate_operation: $ => seq(
+      $.kw_aggregate,
+      $.identifier,
+      '=',
+      $.function_call
+    ),
+
+
+    assignment: ($) => seq(
+      field('variable', $.identifier),
+      '=',
+      field('value', $.expression)
+
+    ),
 
     // --- Operations ---
     for_operation: ($) => seq(
@@ -64,9 +118,14 @@ module.exports = grammar({
 
     // Depth range for traversals (e.g., 1..5)
     depth_range: $ => seq(
-      field('min_depth', optional($.number)),
-      '..',
-      field('max_depth', optional($.number))
+      field('min_depth', $.number),
+      optional(
+        seq(
+          '..',
+          field('max_depth', optional($.number)
+          )
+        )
+      )
     ),
 
     // Traversal direction
@@ -91,17 +150,19 @@ module.exports = grammar({
       $.expression
     ),
 
-    return_operation: $ => seq(
-      $.kw_return,
-      field('value', $.expression)
-    ),
 
     // Add let statement
     let_statement: $ => seq(
       $.kw_let,
       field('variable', $.identifier),
       '=',
-      field('value', $.expression)
+      $.let_value
+
+    ),
+
+    let_value: $ => choice(
+      field('value', $.expression),
+      alias($.query, $.subquery)
     ),
 
     // --- Expressions ---
@@ -124,7 +185,6 @@ module.exports = grammar({
       $.object,
       $.bind_parameter,
       $.collection_bind_parameter
-      // Add $.array, seq('(', $.expression, ')') etc. here later
     ),
 
     // Handles property access like a.b, a['b'], a[0]
@@ -258,9 +318,11 @@ module.exports = grammar({
     kw_collect: $ => alias(token(make_keyword("collect")), $.keyword_operation),
     kw_into: $ => alias(token(make_keyword("into")), $.keyword_operation),
     kw_insert: $ => alias(token(make_keyword("insert")), $.keyword_operation),
+    kw_aggregate: $ => alias(token(make_keyword("aggregate")), $.keyword_operation),
     kw_update: $ => alias(token(make_keyword("update")), $.keyword_operation),
     kw_upsert: $ => alias(token(make_keyword("upsert")), $.keyword_operation),
     kw_replace: $ => alias(token(make_keyword("replace")), $.keyword_operation),
+    kw_distinct: $ => alias(token(make_keyword("distinct")), $.keyword_operation),
 
     // Traversal keywords
     kw_outbound: $ => alias(token(make_keyword("outbound")), $.keyword_traversal),
@@ -270,12 +332,17 @@ module.exports = grammar({
     kw_prune: $ => alias(token(make_keyword("prune")), $.keyword_operation),
     kw_options: $ => alias(token(make_keyword("options")), $.keyword_traversal),
 
+    kw_sort: $ => alias(token(make_keyword("sort")), $.keyword_operation),
+
     boolean: $ => alias(choice($._kw_true, $._kw_false), $.boolean_literal),
     null: $ => alias($._kw_null, $.null_literal),
 
     _kw_true: _ => token(make_keyword("true")),
     _kw_false: _ => token(make_keyword("false")),
     _kw_null: _ => token(make_keyword("null")),
+
+    _kw_asc: _ => token(make_keyword("asc")),
+    _kw_desc: _ => token(make_keyword("desc")),
 
     // --- Comments ---
     comment: $ => token(choice(

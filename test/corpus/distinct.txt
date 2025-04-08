@@ -1,0 +1,76 @@
+==================
+Return Distinct Literal
+==================
+
+return distinct 1
+
+---
+
+(source_file
+    (return_operation
+    (kw_return
+        (keyword_operation))
+    (expression
+        (member_expression
+        (identifier))))
+    (distinct_expression
+    (number)))
+
+==================
+Return Distinct Object
+==================
+
+return distinct { data: "test" }
+
+---
+
+(source_file
+    (return_operation
+    (kw_return
+        (keyword_operation))
+    (distinct_expression
+        (identifier))
+    (expression
+        (member_expression
+        (object
+            (object_pair
+            (property_identifier)
+            (expression
+                (member_expression
+                (literal
+                    (string
+                    (string_fragment)))))))))))
+
+==================
+Return Distinct Document
+==================
+
+for doc in collection
+    return distinct doc
+
+---
+
+(source_file)
+
+
+==================
+Fancy
+==================
+
+for v, e, p in 1..2 outbound document(@@collection, @bindVar) graph @GraphName
+    collect dest = v 
+    into inbound_edges = edge
+
+    let sub_query_result = (
+        for edge in inbound_edges
+            return distinct edge._from
+    )
+
+    return distinct {
+        dest, 
+        inbound_to_last: sub_query_result
+    }
+
+---
+
+(source_file)

@@ -1,0 +1,11 @@
+for doc in docs
+    let subquery = (
+        for other in other_collection
+            filter other._key = doc.fk
+            return other
+    )
+
+    return distinct merge(doc, { others: subquery })
+
+
+    

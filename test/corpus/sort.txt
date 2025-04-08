@@ -1,0 +1,37 @@
+==================
+Simple Sort
+==================
+
+FOR doc IN collection
+    sort doc.created_at desc
+    return doc
+
+---
+
+(source_file
+    (query
+    (for_operation
+        (kw_for
+        (keyword_operation))
+        (identifier)
+        (kw_in
+        (keyword_operator))
+        (collection_selector
+        (collection_name
+            (identifier))))
+    (statement
+        (sort_statement
+        (kw_sort
+            (keyword_operation))
+        (expression
+            (member_expression
+            (member_expression
+                (identifier))
+            (identifier)))
+        (sort_direction)))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (identifier))))))
