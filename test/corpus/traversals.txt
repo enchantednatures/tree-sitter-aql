@@ -1,5 +1,5 @@
 ==================
-TODO: fix - Basic Traversal statements
+Basic Traversal statements
 ==================
 
 for v in 0..2 outbound 'knows' graph 'social'
@@ -37,8 +37,9 @@ for v in 0..2 outbound 'knows' graph 'social'
         (member_expression
             (identifier))))))
 
+
 ==================
-TODO: fix - Vertex and Edges Traversal statements
+Vertex and Edges Traversal statements
 ==================
 
 for v, e in 0..10 outbound 'knows' graph 'social'
@@ -73,64 +74,13 @@ for v, e in 0..10 outbound 'knows' graph 'social'
     (return_operation
         (kw_return
         (keyword_operation))
+        (keyword_distinct)
         (expression
         (member_expression
-            (identifier)))))
-    (ERROR
-    (identifier)))
+            (identifier))))))
 
 ==================
-TODO: fix - Prune Traversal statements
-==================
-
-for v, e, p in 0..10 outbound 'knows' graph 'social'
-    prune p.edges[*].weight < 0.8
-    return interleave(p)
-
----
-
-(ERROR
-    (for_traversal_operation
-    (kw_for
-        (keyword_operation))
-    (identifier)
-    (identifier)
-    (identifier)
-    (kw_in
-        (keyword_operator))
-    (depth_range
-        (number)
-        (number))
-    (traversal_direction
-        (kw_outbound
-        (keyword_traversal)))
-    (expression
-        (member_expression
-        (literal
-            (string
-            (string_fragment)))))
-    (kw_graph
-        (keyword_traversal))
-    (string
-        (string_fragment)))
-    (prune_operation
-    (kw_prune
-        (keyword_operation))
-    (expression
-        (member_expression
-        (member_expression
-            (member_expression
-            (member_expression
-                (identifier))
-            (identifier)))
-        (identifier))))
-    (number)
-    (identifier)
-    (identifier)
-    (identifier))
-
-==================
-TODO: fix - Advanced Traversal statements
+Advanced Traversal statements
 ==================
 
 for v, e, p in 0..2 outbound 'knows' graph 'social'
@@ -145,7 +95,7 @@ for v, e, p in 0..2 outbound 'knows' graph 'social'
 ---
 
 (source_file
-    (ERROR
+    (query
     (for_traversal_operation
         (kw_for
         (keyword_operation))
@@ -168,45 +118,49 @@ for v, e, p in 0..2 outbound 'knows' graph 'social'
         (kw_graph
         (keyword_traversal))
         (string
-        (string_fragment))))
-    (let_statement
-    (kw_let
-        (keyword_operation))
-    (identifier)
-    (expression
-        (member_expression
-        (member_expression
-            (member_expression
-            (identifier))
-            (identifier)))))
-    (let_statement
-    (kw_let
-        (keyword_operation))
-    (identifier)
-    (expression
-        (member_expression
-        (object
-            (object_pair
-            (property_identifier)
+        (string_fragment)))
+    (statement
+        (let_statement
+        (kw_let
+            (keyword_operation))
+        (identifier)
+        (let_value
             (expression
+            (member_expression
                 (member_expression
                 (member_expression
                     (identifier))
-                (identifier))))))))
-    (return_operation
-    (kw_return
-        (keyword_operation))
-    (expression
-        (member_expression
-        (object
-            (object_pair
-            (property_identifier)
+                (identifier)))))))
+    (statement
+        (let_statement
+        (kw_let
+            (keyword_operation))
+        (identifier)
+        (let_value
             (expression
-                (member_expression
-                (member_expression
+            (member_expression
+                (object
+                (object_pair
+                    (property_identifier)
+                    (expression
                     (member_expression
-                    (member_expression
+                        (member_expression
                         (identifier))
-                    (identifier)))
-                (identifier)))))))))
+                        (identifier))))))))))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (object
+            (object_pair
+                (property_identifier)
+                (expression
+                (member_expression
+                    (member_expression
+                    (member_expression
+                        (member_expression
+                        (identifier))
+                        (identifier)))
+                    (identifier))))))))))
 

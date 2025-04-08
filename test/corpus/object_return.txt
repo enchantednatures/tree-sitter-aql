@@ -47,11 +47,12 @@ return {
     (kw_let
         (keyword_operation))
     (identifier)
-    (expression
+    (let_value
+        (expression
         (member_expression
-        (literal
+            (literal
             (string
-            (string_fragment))))))
+                (string_fragment)))))))
     (return_operation
     (kw_return
         (keyword_operation))

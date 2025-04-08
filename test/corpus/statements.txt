@@ -14,32 +14,33 @@ for doc in collection
         (kw_for
         (keyword_operation))
         (identifier)
-          (kw_in
-            (keyword_operator))
-          (collection_selector
-            (collection_name
-              (identifier))))
+        (kw_in
+        (keyword_operator))
+        (collection_selector
+        (collection_name
+            (identifier))))
+    (statement
         (filter_operation
-          (kw_filter
+        (kw_filter
             (keyword_operation))
-          (comparison_expression
+        (comparison_expression
             (expression
-              (member_expression
+            (member_expression
                 (member_expression
-                  (identifier))
+                (identifier))
                 (identifier)))
             (comparison_operator)
             (expression
-              (member_expression
-                (literal
-                  (string
-                    (string_fragment)))))))
-        (return_operation
-          (kw_return
-            (keyword_operation))
-          (expression
             (member_expression
-              (identifier))))))
+                (literal
+                (string
+                    (string_fragment))))))))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (identifier))))))
 
 
 ==================
@@ -63,19 +64,20 @@ for doc in collection
         (collection_selector
         (collection_name
             (identifier))))
-    (filter_operation
+    (statement
+        (filter_operation
         (kw_filter
-        (keyword_operation))
+            (keyword_operation))
         (comparison_expression
-        (expression
+            (expression
             (member_expression
-            (member_expression
+                (member_expression
                 (identifier))
-            (identifier)))
-        (comparison_operator)
-        (expression
+                (identifier)))
+            (comparison_operator)
+            (expression
             (member_expression
-            (bind_parameter)))))
+                (bind_parameter))))))
     (return_operation
         (kw_return
         (keyword_operation))
@@ -104,19 +106,20 @@ for doc in collection
         (collection_selector
         (collection_name
             (identifier))))
-    (filter_operation
+    (statement
+        (filter_operation
         (kw_filter
-        (keyword_operation))
+            (keyword_operation))
         (comparison_expression
-        (expression
+            (expression
             (member_expression
-            (bind_parameter)))
-        (comparison_operator)
-        (expression
+                (bind_parameter)))
+            (comparison_operator)
+            (expression
             (member_expression
-            (member_expression
+                (member_expression
                 (identifier))
-            (identifier)))))
+                (identifier))))))
     (return_operation
         (kw_return
         (keyword_operation))
@@ -144,19 +147,20 @@ for doc in @@collection
         (keyword_operator))
         (collection_selector
         (collection_bind_parameter)))
-    (filter_operation
+    (statement
+        (filter_operation
         (kw_filter
-        (keyword_operation))
+            (keyword_operation))
         (comparison_expression
-        (expression
+            (expression
             (member_expression
-            (member_expression
+                (member_expression
                 (identifier))
-            (identifier)))
-        (comparison_operator)
-        (expression
+                (identifier)))
+            (comparison_operator)
+            (expression
             (member_expression
-            (bind_parameter)))))
+                (bind_parameter))))))
     (return_operation
         (kw_return
         (keyword_operation))

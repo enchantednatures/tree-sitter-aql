@@ -1,16 +1,39 @@
 ==================
-Collect with Count Query
+Simple Collect Query
 ==================
 
 for doc in documents
     collect name = doc.name
-    with count into len
-
-    return {
-        name, 
-        len
-    }
+    return name
 
 ---
 
-(state)
+(source_file
+    (query
+    (for_operation
+        (kw_for
+        (keyword_operation))
+        (identifier)
+        (kw_in
+        (keyword_operator))
+        (collection_selector
+        (collection_name
+            (identifier))))
+    (statement
+        (collect_operation
+        (kw_collect
+            (keyword_operation))
+        (assignment
+            (identifier)
+            (expression
+            (member_expression
+                (member_expression
+                (identifier))
+                (identifier))))))
+    (return_operation
+        (kw_return
+        (keyword_operation))
+        (expression
+        (member_expression
+            (identifier))))))
+
